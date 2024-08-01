@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_PRODUCTSALES_URL")
+}
+
+
+model Users {
+    userId  Int @id @default(autoincrement())
+    firstName String @db.VarChar(64)
+    lastName  String @db.VarChar(64)
+    email     String @db.VarChar(64)
+    password  String @db.VarChar(64)
+    refreshToken String? @db.VarChar(64)
+    roleId Int
+    createdAt DateTime @default(now())
+}
+
+model Products {
+    productId  Int @id @default(autoincrement())
+    productName String @db.VarChar(64)
+    productDesc String? @db.VarChar(64)
+    regularPrice Float
+    productBarcode String? @db.VarChar(64)
+    productImage String? @db.VarChar(64)
+}
+
