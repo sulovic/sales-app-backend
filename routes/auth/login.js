@@ -6,46 +6,48 @@ const bcrypt = require("bcryptjs");
 const { generateAccessToken, generateRefreshToken } = require("../../middleware/generateTokens");
 const verifyGoogleToken = require("../../middleware/verifyGoogleToken");
 
-router.get("/", async (req, res) => {
+const getUserData = async (email) => {
+  return await prisma.users.findUnique({
+    where: { email }
+  });
+};
+
+
+router.post("/", async (req, res) => {
   try {
-    const { type, email, password, credential, clientId } = req.body;
+    const { type, email, password, credential } = req?.body;
     if (!type) {
       return res.status(401).json({ message: "Missing Auth type" });
     }
-    if (!email) {
-      return res.status(401).json({ message: "Missing user email" });
-    }
-    const foundUser = await prisma.users.findUnique({
-      where: {
-        email: email,
-      },
-    });
-    if (!foundUser) {
-      return res.status(401).json({ message: "User not found" });
-    }
-
-    const userData = {
-      firstName: foundUser?.firstName,
-      lastName: foundUser?.lastName,
-      email: foundUser?.email,
-      roleId: foundUser?.roleId,
-    };
 
     if (type === "password") {
       // User-Password authentication
 
       if (!email || !password) {
-        return res.status(401).json({ message: "Missing UserName or Password" });
+        return res.status(401).json({ message: "Missing Email or Password" });
       }
 
-      const isPasswordValid = await bcrypt.compare(password, foundUser.password);
+      const foundUser = await getUserData(email);
+
+      if (!foundUser) {
+        return res.status(401).json({ message: "User not found" });
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, foundUser?.password);
 
       if (!isPasswordValid) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
-      const accessToken = await generateAccessToken(userData);
-      const refreshToken = await generateRefreshToken(userData);
+      const authUser = {
+        firstName: foundUser?.firstName,
+        lastName: foundUser?.lastName,
+        email: foundUser?.email,
+        roleId: foundUser?.roleId,
+      };
+
+      const accessToken = await generateAccessToken(authUser);
+      const refreshToken = await generateRefreshToken(authUser);
 
       res
         .cookie("refreshToken", refreshToken, {
@@ -59,21 +61,30 @@ router.get("/", async (req, res) => {
           info: "User found, Password OK!",
           accessToken,
         });
-    } else if (type === "oauth") {
-      // OAuth authentication
+    } else if (type === "google") {
+      // Google authentication
 
-      if (!email || !credential) {
-        return res.status(401).json({ message: "Missing Email or Google Credentials" });
+      if (!credential) {
+        return res.status(401).json({ message: "Missing Google Credentials" });
       }
 
       const decodedCredential = await verifyGoogleToken(credential);
 
-      if (!decodedCredential?.email !== email) {
-        return res.status(401).json({ message: "Invalid credentials" });
+      const foundUser = await getUserData(decodedCredential?.email);
+
+      if (!foundUser) {
+        return res.status(401).json({ message: "User not found" });
       }
 
-      const accessToken = generateAccessToken(userData);
-      const refreshToken = await generateRefreshToken(userData);
+      const authUser = {
+        firstName: foundUser?.firstName,
+        lastName: foundUser?.lastName,
+        email: foundUser?.email,
+        roleId: foundUser?.roleId,
+      };
+
+      const accessToken = await generateAccessToken(authUser);
+      const refreshToken = await generateRefreshToken(authUser);
 
       res
         .cookie("refreshToken", refreshToken, {
