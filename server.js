@@ -16,13 +16,18 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(requestLogger, errorLogger);
 
-app.use("/api/products", require("./routes/products"));
-// app.use("api/sales", require("./routes/sales"));
 
+// Auth routes
 app.use("/login", rateLimiter(3, 10), require("./routes/auth/login"));
 app.use("/logout", require("./routes/auth/logout"));
 app.use("/refresh", require("./routes/auth/refresh"));
 // app.use("/reset", require("./routes/auth/reset"));
+
+
+// Data routes
+app.use("/api/products", require("./routes/products"));
+app.use("/api/users", require("./routes/users"));
+// app.use("api/sales", require("./routes/sales"));
 
 
 app.use((err, req, res, next) => {
