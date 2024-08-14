@@ -3,8 +3,9 @@ const router = express.Router();
 const { PrismaClient } = require("../prisma/client");
 const prisma = new PrismaClient();
 const checkUserRole = require("../middleware/checkUserRole");
+const {minRoles} = require("../config/minRoles")
 
-router.get("/", checkUserRole((minRole = 1000)), async (req, res) => {
+router.get("/", checkUserRole((minRole = minRoles.products.get)), async (req, res) => {
   try {
     // Get query params
 
@@ -43,7 +44,7 @@ router.get("/", checkUserRole((minRole = 1000)), async (req, res) => {
   }
 });
 
-router.get("/:id", checkUserRole((minRole = 1000)), async (req, res) => {
+router.get("/:id", checkUserRole((minRole = minRoles.products.get)), async (req, res) => {
   try {
     const id = parseInt(req?.params?.id);
 
@@ -65,7 +66,7 @@ router.get("/:id", checkUserRole((minRole = 1000)), async (req, res) => {
   }
 });
 
-router.post("/", checkUserRole((minRole = 1000)), async (req, res) => {
+router.post("/", checkUserRole((minRole = minRoles.products.post)), async (req, res) => {
   try {
     const newProduct = req?.body;
 
@@ -84,7 +85,7 @@ router.post("/", checkUserRole((minRole = 1000)), async (req, res) => {
   }
 });
 
-router.put("/:id", checkUserRole((minRole = 1000)), async (req, res) => {
+router.put("/:id", checkUserRole((minRole = minRoles.products.put)), async (req, res) => {
   try {
     const id = parseInt(req?.params?.id);
 
@@ -109,7 +110,7 @@ router.put("/:id", checkUserRole((minRole = 1000)), async (req, res) => {
   }
 });
 
-router.delete("/:id", checkUserRole((minRole = 5000)), async (req, res) => {
+router.delete("/:id", checkUserRole((minRole = minRoles.products.delete)), async (req, res) => {
   try {
     const id = parseInt(req?.params?.id);
 
