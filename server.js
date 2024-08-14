@@ -26,6 +26,8 @@ app.use("/refresh", require("./routes/auth/refresh"));
 
 
 // Public route
+app.use("/api/productsPublic", require("./routes/productsPublic"));
+
 
 // Data routes
 app.use("/api/products", verifyAccessToken, require("./routes/products"));
