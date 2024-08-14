@@ -2,10 +2,11 @@ const express = require("express");
 const router = express.Router();
 const { PrismaClient } = require("../prisma/client");
 const prisma = new PrismaClient();
+const checkUserRole = require("../middleware/checkUserRole");
 
 // implement check user role
 
-router.get("/", async (req, res) => {
+router.get("/", checkUserRole((minRole=1000)), async (req, res) => {
   try {
     // Get query params
 
@@ -51,7 +52,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", checkUserRole((minRole=1000)), async (req, res) => {
   try {
     const id = parseInt(req?.params?.id);
 
@@ -73,7 +74,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", checkUserRole((minRole=5000)), async (req, res) => {
   try {
     const newUser = req?.body;
 
@@ -96,7 +97,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", checkUserRole((minRole=5000)), async (req, res) => {
   try {
     const id = parseInt(req?.params?.id);
 
@@ -111,7 +112,7 @@ router.put("/:id", async (req, res) => {
       return res.status(404).json({ error: "Resource not found" });
     }
 
-    res.status(204).json(user);
+    res.status(200).json(user);
   } catch (err) {
     res.status(500).json({ error: "Internal Server Error", details: err.message });
   } finally {
@@ -121,7 +122,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", checkUserRole((minRole=5000)),   async (req, res) => {
   try {
     const id = parseInt(req?.params?.id);
 
@@ -145,7 +146,7 @@ router.delete("/:id", async (req, res) => {
       },
     });
 
-    res.status(204).json(deletedUser);
+    res.status(200).json(deletedUser);
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Internal Server Error" });

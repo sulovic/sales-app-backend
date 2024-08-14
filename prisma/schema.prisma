@@ -25,10 +25,10 @@ model Users {
 model Products {
   productId      Int     @id @default(autoincrement())
   productName    String  @db.VarChar(64)
-  productDesc    String? @db.VarChar(64)
+  productDesc    String? @db.VarChar(128)
   regularPrice   Float
   productBarcode String? @db.VarChar(64)
-  productImage   String? @db.VarChar(64)
+  productImage   String? @db.VarChar(128)
 
   @@index([productId])
   @@index([productName])
