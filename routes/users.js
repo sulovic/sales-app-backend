@@ -3,9 +3,9 @@ const router = express.Router();
 const { PrismaClient } = require("../prisma/client");
 const prisma = new PrismaClient();
 const checkUserRole = require("../middleware/checkUserRole");
-const {minRoles} = require("../config/minRoles")
+const { minRoles } = require("../config/minRoles");
 
-router.get("/", checkUserRole((minRole = minRoles.users.get)), async (req, res) => {
+router.get("/", checkUserRole(minRoles.users.get), async (req, res) => {
   try {
     const queryParams = req?.query;
     const { sortBy, sortOrder, limit, page, ...filters } = queryParams;
@@ -49,7 +49,7 @@ router.get("/", checkUserRole((minRole = minRoles.users.get)), async (req, res) 
   }
 });
 
-router.get("/:id", checkUserRole((minRole = minRoles.users.get)), async (req, res) => {
+router.get("/:id", checkUserRole(minRoles.users.get), async (req, res) => {
   try {
     const id = parseInt(req?.params?.id);
 
@@ -71,7 +71,7 @@ router.get("/:id", checkUserRole((minRole = minRoles.users.get)), async (req, re
   }
 });
 
-router.post("/", checkUserRole((minRole = minRoles.users.post)), async (req, res) => {
+router.post("/", checkUserRole(minRoles.users.post), async (req, res) => {
   try {
     const newUser = req?.body;
 
@@ -94,7 +94,7 @@ router.post("/", checkUserRole((minRole = minRoles.users.post)), async (req, res
   }
 });
 
-router.put("/:id", checkUserRole((minRole = minRoles.users.put)), async (req, res) => {
+router.put("/:id", checkUserRole(minRoles.users.put), async (req, res) => {
   try {
     const id = parseInt(req?.params?.id);
 
@@ -119,7 +119,7 @@ router.put("/:id", checkUserRole((minRole = minRoles.users.put)), async (req, re
   }
 });
 
-router.delete("/:id", checkUserRole((minRole = minRoles.users.delete)),   async (req, res) => {
+router.delete("/:id", checkUserRole(minRoles.users.delete), async (req, res) => {
   try {
     const id = parseInt(req?.params?.id);
 

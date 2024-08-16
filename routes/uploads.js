@@ -3,7 +3,8 @@ const router = express.Router();
 const path = require("path");
 const fs = require("fs/promises");
 const checkUserRole = require("../middleware/checkUserRole");
-const {minRoles} = require("../config/minRoles")
+const { minRoles } = require("../config/minRoles");
+const resizeImage = require("../middleware/resizeImage");
 const multer = require("multer");
 
 const storage = multer.diskStorage({
@@ -36,7 +37,7 @@ const upload = multer({
   },
 });
 
-router.post("/*", checkUserRole((minRole = minRoles.uploads.post)), upload.single("file"), async (req, res) => {
+router.post("/*", checkUserRole(minRoles.uploads.post), upload.single("file"), resizeImage(800), async (req, res) => {
   try {
     if (!req.file || req.file.length === 0) {
       return res.status(400).send("No files were uploaded.");
@@ -44,11 +45,11 @@ router.post("/*", checkUserRole((minRole = minRoles.uploads.post)), upload.singl
     res.status(200).json(req?.file?.filename);
   } catch (err) {
     res.status(500).json({ error: "Internal Server Error" });
-    console.log(err)
+    console.log(err);
   }
 });
 
-router.delete("/:filename", checkUserRole((minRole = minRoles.uploads.delete)), async (req, res) => {
+router.delete("/:filename", checkUserRole(minRoles.uploads.delete), async (req, res) => {
   try {
     const { filename } = req.params;
 
