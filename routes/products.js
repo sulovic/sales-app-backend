@@ -71,7 +71,7 @@ router.post("/", checkUserRole(minRoles.products.post), async (req, res) => {
     const newProduct = req?.body;
 
     if (!newProduct) {
-      return res.status(400).json({ error: "No user data is sent" });
+      return res.status(400).json({ error: "No product data is sent" });
     }
 
     const product = await prisma.products.create({ data: newProduct });

@@ -13,7 +13,7 @@ model Users {
   firstName    String   @db.VarChar(64)
   lastName     String   @db.VarChar(64)
   email        String   @unique @db.VarChar(64)
-  password     String?   @db.VarChar(64)
+  password     String?  @db.VarChar(64)
   refreshToken String?  @db.VarChar(512)
   resetToken   String?  @db.VarChar(64)
   roleId       Int
@@ -23,14 +23,32 @@ model Users {
 }
 
 model Products {
-  productId      Int     @id @default(autoincrement())
-  productName    String  @db.VarChar(64)
-  productDesc    String? @db.VarChar(128)
+  productId      Int             @id @default(autoincrement())
+  productName    String          @db.VarChar(64)
+  productDesc    String?         @db.VarChar(128)
   regularPrice   Float
-  productBarcode String? @db.VarChar(64)
-  productImage   String? @db.VarChar(128)
+  productBarcode String?         @db.VarChar(64)
+  productImage   String?         @db.VarChar(128)
+  ProductsSales  ProductsSales[]
 
   @@index([productId])
   @@index([productName])
   @@index([productBarcode])
+}
+
+model Sales {
+  saleId        Int             @id @default(autoincrement())
+  startDate     DateTime
+  endDate       DateTime
+  active        Boolean
+  ProductsSales ProductsSales[]
+}
+
+model ProductsSales {
+  psId       Int      @id @default(autoincrement())
+  product    Products @relation(fields: [productId], references: [productId], onDelete: Cascade, onUpdate: NoAction)
+  productId  Int
+  sale       Sales    @relation(fields: [saleId], references: [saleId], onDelete: Cascade, onUpdate: NoAction)
+  saleId     Int
+  salesPrice Float
 }
