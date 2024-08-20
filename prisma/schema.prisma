@@ -29,7 +29,7 @@ model Products {
   regularPrice   Float
   productBarcode String?         @db.VarChar(64)
   productImage   String?         @db.VarChar(128)
-  ProductsSales  ProductsSales[]
+  SaleProducts  SaleProducts[]
 
   @@index([productId])
   @@index([productName])
@@ -41,14 +41,14 @@ model Sales {
   startDate     DateTime
   endDate       DateTime
   active        Boolean
-  ProductsSales ProductsSales[]
+  SaleProducts SaleProducts[]
 }
 
-model ProductsSales {
-  psId       Int      @id @default(autoincrement())
+model SaleProducts {
+  spId       Int      @id @default(autoincrement())
   product    Products @relation(fields: [productId], references: [productId], onDelete: Cascade, onUpdate: NoAction)
   productId  Int
   sale       Sales    @relation(fields: [saleId], references: [saleId], onDelete: Cascade, onUpdate: NoAction)
   saleId     Int
-  salesPrice Float
+  salePrice Float
 }

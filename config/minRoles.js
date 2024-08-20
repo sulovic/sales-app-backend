@@ -20,6 +20,12 @@ const minRoles = {
         post: 1000,
         put: 1000,
         delete: 5000,
+    },
+    saleProducts:{
+        get: 1000,
+        post: 1000,
+        put: 1000,
+        delete: 5000,
     }
 }
 

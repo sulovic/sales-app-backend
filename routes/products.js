@@ -102,7 +102,7 @@ router.put("/:id", checkUserRole(minRoles.products.put), async (req, res) => {
 
     res.status(200).json(product);
   } catch (err) {
-    res.status(500).json({ error: "Internal Server Error", details: err.message });
+    res.status(500).json({ error: "Internal Server Error" });
   } finally {
     if (prisma) {
       await prisma.$disconnect();

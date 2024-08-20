@@ -34,7 +34,7 @@ app.use("/api/products", verifyAccessToken, require("./routes/products"));
 app.use("/api/users", verifyAccessToken, require("./routes/users"));
 app.use("/api/uploads", verifyAccessToken, require("./routes/uploads"));
 app.use("/api/sales", verifyAccessToken, require("./routes/sales"));
-// app.use("/api/saleProducts", require("./routes/saleProducts"));
+app.use("/api/saleProducts", require("./routes/saleProducts"));
 
 
 
