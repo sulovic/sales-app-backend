@@ -25,13 +25,12 @@ router.get("/", checkUserRole(minRoles.saleProducts.get), async (req, res) => {
     for (const key in filters) {
       const value = filters[key];
       const values = value.split(",");
-      filter[key] = { in: (key=== "saleId" ? [parseInt(values)] : values) };
+      filter[key] = { in: key === "saleId" ? [parseInt(values)] : values };
     }
-
 
     const saleProducts = await prisma.saleProducts.findMany({
       where: filter,
-      orderBy,  
+      orderBy,
       take,
       skip,
       include: {
@@ -40,8 +39,6 @@ router.get("/", checkUserRole(minRoles.saleProducts.get), async (req, res) => {
     });
     res.status(200).json(saleProducts);
   } catch (error) {
-    console.log(error);
-
     res.status(500).json({ error: "Internal Server Error" });
   } finally {
     if (prisma) {
@@ -145,7 +142,6 @@ router.delete("/:id", checkUserRole(minRoles.saleProducts.delete), async (req, r
 
     res.status(200).json(deletedSaleProducts);
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: "Internal Server Error" });
   } finally {
     if (prisma) {

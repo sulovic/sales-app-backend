@@ -26,7 +26,7 @@ app.use("/refresh", require("./routes/auth/refresh"));
 
 
 // Public route
-app.use("/api/productsPublic", require("./routes/productsPublic"));
+app.use("/api/productsOnSale", require("./routes/productsOnSale"));
 
 
 // Data routes

@@ -26,11 +26,26 @@ router.get("/", async (req, res) => {
         filter[key] = { in: values };
       }
   
-      const products = await prisma.products.findMany({
-        where: filter,
+      const products = await prisma.saleProducts.findMany({
+        // where: filter,
+        where: {
+          sale: {
+            active: true,
+            startDate: {
+              lte: new Date()
+            },
+            endDate: {
+              gte: new Date()
+            }
+          }
+
+        },
         orderBy,
         take,
         skip,
+        include: {
+          product: true,
+        },
       });
       res.status(200).json(products);
     } catch (error) {
